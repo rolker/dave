@@ -141,10 +141,8 @@ public:
 
   /// \brief Create a MultibeamSonarSensor sensor.
   bool RequestCreateSensor(
-      const gz::sim::Entity & _entity,
-      const gz::sim::components::CustomSensor * _custom,
-      const gz::sim::components::ParentEntity * _parent,
-      gz::sim::EntityComponentManager & _ecm);
+    const gz::sim::Entity & _entity, const gz::sim::components::CustomSensor * _custom,
+    const gz::sim::components::ParentEntity * _parent, gz::sim::EntityComponentManager & _ecm);
 
   /// \brief Implementation for Configure() hook.
 public:
@@ -260,15 +258,12 @@ using namespace sim;
 using namespace systems;
 
 bool MultibeamSonarSystem::Implementation::RequestCreateSensor(
-      const gz::sim::Entity & _entity,
-      const gz::sim::components::CustomSensor * _custom,
-      const gz::sim::components::ParentEntity * _parent,
-      gz::sim::EntityComponentManager & _ecm)
+  const gz::sim::Entity & _entity, const gz::sim::components::CustomSensor * _custom,
+  const gz::sim::components::ParentEntity * _parent, gz::sim::EntityComponentManager & _ecm)
 {
   using namespace gz::sim;
   // Get sensor's scoped name without the world
-  std::string sensorScopedName =
-    removeParentScope(scopedName(_entity, _ecm, "::", false), "::");
+  std::string sensorScopedName = removeParentScope(scopedName(_entity, _ecm, "::", false), "::");
 
   // Check sensor's type before proceeding
   sdf::Sensor sdf = _custom->Data();
@@ -308,13 +303,12 @@ bool MultibeamSonarSystem::Implementation::RequestCreateSensor(
 
   this->knownSensorEntities.insert(_entity);
   return true;
-
 }
 
 //////////////////////////////////////////////////
 void MultibeamSonarSystem::Implementation::DoConfigure(
   const gz::sim::Entity &, const std::shared_ptr<const sdf::Element> &,
-  gz::sim::EntityComponentManager &_ecm, gz::sim::EventManager & _eventMgr)
+  gz::sim::EntityComponentManager & _ecm, gz::sim::EventManager & _eventMgr)
 {
   this->preRenderConn =
     _eventMgr.Connect<gz::sim::events::PreRender>(std::bind(&Implementation::OnPreRender, this));
@@ -330,13 +324,11 @@ void MultibeamSonarSystem::Implementation::DoConfigure(
 
   this->eventMgr = &_eventMgr;
 
-  _ecm.EachNew<gz::sim::components::CustomSensor, gz::sim::components::ParentEntity>([&](
+  _ecm.EachNew<gz::sim::components::CustomSensor, gz::sim::components::ParentEntity>(
+    [&](
       const gz::sim::Entity & _entity, const gz::sim::components::CustomSensor * _custom,
       const gz::sim::components::ParentEntity * _parent) -> bool
-  {
-    return this->RequestCreateSensor(_entity, _custom, _parent, _ecm);
-  });
-    
+    { return this->RequestCreateSensor(_entity, _custom, _parent, _ecm); });
 }
 
 //////////////////////////////////////////////////
@@ -362,16 +354,11 @@ void MultibeamSonarSystem::Implementation::DoPreUpdate(
       return true;
     });
 
-
-  _ecm.EachNew<gz::sim::components::CustomSensor, gz::sim::components::ParentEntity>([&](
+  _ecm.EachNew<gz::sim::components::CustomSensor, gz::sim::components::ParentEntity>(
+    [&](
       const gz::sim::Entity & _entity, const gz::sim::components::CustomSensor * _custom,
       const gz::sim::components::ParentEntity * _parent) -> bool
-  {
-    return this->RequestCreateSensor(_entity, _custom, _parent, _ecm);
-  });
-    
-
-
+    { return this->RequestCreateSensor(_entity, _custom, _parent, _ecm); });
 }
 
 //////////////////////////////////////////////////
